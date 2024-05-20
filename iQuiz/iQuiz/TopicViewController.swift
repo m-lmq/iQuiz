@@ -65,9 +65,8 @@ class TopicViewController: UIViewController, UITableViewDelegate, UITableViewDat
             timer?.invalidate()
             timer = nil
             
-            //set one minutes timer
             //Timed refresh with user-specified interval in settings: 1 point.
-            timer = Timer.scheduledTimer(timeInterval: 10.0, target: self, selector: #selector(timerFired), userInfo: nil, repeats: true)
+            timer = Timer.scheduledTimer(timeInterval: 30.0, target: self, selector: #selector(timerFired), userInfo: nil, repeats: true)
             
         }
     }
@@ -194,6 +193,23 @@ class TopicViewController: UIViewController, UITableViewDelegate, UITableViewDat
     // Handle the tap on the "Settings" button
     @IBAction func settingTapped(_ sender: Any) {
         let alertController = UIAlertController(title: "Settings", message: "Settings go here", preferredStyle: .alert)
+        
+        if let savedURL = UserDefaults.standard.string(forKey: "savedURL") {
+
+            // Add a text field for the URL
+            alertController.addTextField { textField in
+                textField.text = savedURL
+            }
+        }
+
+        // Add "Check Now" action
+        let checkAction = UIAlertAction(title: "Check Now", style: .default) { action in
+            // Perform update check with the entered URL
+            if let url = alertController.textFields?.first?.text {
+                self.checkForUpdates(with: url)
+            }
+        }
+        alertController.addAction(checkAction)
    
         // Add "OK" action
         let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
